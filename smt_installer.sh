@@ -313,18 +313,18 @@ advanced_options()
                         echo 1
                           linux_packages_install
                           boost_cpp_libraries_install
-						  giza_pp_install
-						  moses_install
-						  test_moses
+			  giza_pp_install
+			  moses_install
+			  test_moses
                         ;;
                       2 )
                         echo 2
                           linux_packages_install
                           boost_cpp_libraries_install
-						  giza_pp_install
-						  srilm_install
-						  moses2_install
-						  test_moses2
+			  giza_pp_install
+			  srilm_install
+			  moses2_install
+			  test_moses
                         ;;
                       3 )
                         echo 3
