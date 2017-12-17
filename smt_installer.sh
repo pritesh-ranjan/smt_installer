@@ -1,11 +1,11 @@
 #!/bin/bash
 
-lipdf = 0
+lipdf=0
 
 error()
 {
 	echo -e "\033[0;31m Oops! ERROR" | tee -a smt_installer.log
-	echo -e "\033[0;31m Please check if you have a working internet connection and you are authorised to install programs in this system" | tee -a smt_installer.log
+	echo -e '\033[0;31m Please check if you have a working internet connection and you are authorised to install programs in this system \e[0m' | tee -a smt_installer.log
 	kill "$!"
 	exit
 }
