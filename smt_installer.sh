@@ -4,13 +4,13 @@ lipdf = 0
 
 error()
 {
-	echo -e "\033[0;31m Oops! ERROR"
-	echo -e "\033[0;31m Please check if you have a working internet connection and you are authorised to install programs in this system"
+	echo -e "\033[0;31m Oops! ERROR" | tee -a smt_installer.log
+	echo -e "\033[0;31m Please check if you have a working internet connection and you are authorised to install programs in this system" | tee -a smt_installer.log
 	kill "$!"
-	#exit
+	exit
 }
 
-chk_internet_connection()
+chk_internet_connection() 
 {
 	ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` 2> /dev/null && echo "Internet is working" || error
 }
@@ -30,17 +30,17 @@ spinner()
 
 linux_packages_install()
 {
-	echo 'Updating apt-get'
+	echo 'Updating apt-get' | tee -a smt_installer.log
 	spinner &
 	sudo apt-get -y update   || error
-	echo 'Downloading and installing all required packages'
+	echo 'Downloading and installing all required packages' | tee -a smt_installer.log
 	sudo apt-get install -y g++ git automake libtool zlib1g-dev libboost-all-dev libbz2-dev liblzma-dev libgoogle-perftools-dev python-dev graphviz imagemagick cmake build-essential subversion autoconf unzip   || error
 	sudo apt-get install -y make  
 	sudo apt-get install -y unzip  
 	kill "$!"
 	lipdf = 1
 
-	echo "All packages downloded"
+	echo "All packages downloded" | tee -a smt_installer.log
 }
 
 
@@ -48,14 +48,14 @@ linux_packages_install()
 indic_nlp_library_install()
 {
 	if [ -d "indic_nlp_library/src" ]; then
-		echo -e '\033[0;32m indicnlp found, skipping installation \e[0m'
+		echo -e '\033[0;32m indicnlp found, skipping installation \e[0m' | tee -a smt_installer.log
 		return 1
 	fi
-	echo "Downloading indic_nlp_library"
+	echo "Downloading indic_nlp_library" | tee -a smt_installer.log
 	spinner &
 	git clone https://github.com/anoopkunchukuttan/indic_nlp_library.git  
 	sudo cp indic_nlp_library/src/indicnlp/tokenize/indic_tokenize.py /usr/local/bin/indic_tokenize.py 
-	echo "Indic nlp library successfully installed"
+	echo "Indic nlp library successfully installed" | tee -a smt_installer.log
 	kill "$!"
 }
 
@@ -64,18 +64,18 @@ indic_nlp_library_install()
 old_boost_cpp_libraries_install()
 {		
 	spinner &
-	echo "Downloading boost_cpp_libraries"
+	echo "Downloading boost_cpp_libraries" | tee -a smt_installer.log
 	wget https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz  
-	echo 'unpacking boost'
+	echo 'unpacking boost' | tee -a smt_installer.log
 	tar zxvf boost_1_64_0.tar.gz  
 	cd boost_1_64_0/
-	echo 'Setting up boost'
+	echo 'Setting up boost' | tee -a smt_installer.log
 	./bootstrap.sh   || error
 	#boost install
-	echo 'Installing Boost cpp libraies'
+	echo 'Installing Boost cpp libraies' | tee -a smt_installer.log
 	./b2   || error
 	./b2 -j4 --prefix=${PWD} --libdir=${PWD}/lib64 --layout=system link=static install
-	echo "done"
+	echo "done" | tee -a smt_installer.log
 	#./b2 -j4 --prefix=${PWD} --libdir=${PWD}/lib64 --layout=system link=static install
 	cd ..
 	kill "$!"
@@ -84,14 +84,14 @@ old_boost_cpp_libraries_install()
 
 old_xmlrpc_install()
 {
-	echo "Downloading xmlrpc for moses2/moses_server "
+	echo "Downloading xmlrpc for moses2/moses_server " | tee -a smt_installer.log
 	wget -O xmlrpc-c-1.39.12.tgz https://sourceforge.net/projects/xmlrpc-c/files/Xmlrpc-c%20Super%20Stable/1.39.12/xmlrpc-c-1.39.12.tgz/download  
 	tar -xvzf xmlrpc-c-1.39.12.tgz || error
 	cd xmlrpc-c-1.39.12
 	./configure --prefix=$wdirect/xmlrpc || error
 	make || error
 	make install || error
-	echo "xmlrpc installed "
+	echo "xmlrpc installed " | tee -a smt_installer.log
 	cd ..
 
 }
@@ -101,19 +101,19 @@ giza_pp_install()
 {
 	spinner &
 	if [ -d "bin/" ]; then
-		echo -e '\033[0;32m giza-pp binaries found, skipping installation \e[0m'
+		echo -e '\033[0;32m giza-pp binaries found, skipping installation \e[0m' | tee -a smt_installer.log
 		kill "$!"
 		return 1
 	fi
 	sudo rm giza-pp/
-	echo "Downloading giza-pp"
+	echo "Downloading giza-pp" | tee -a smt_installer.log
 	git clone https://github.com/moses-smt/giza-pp.git  
 	cd giza-pp
 	echo 'Compiling giza++'
 	make   || error
 	cd ../
-	mkdir bin
-	echo 'Installing giza++'
+	mkdir bin | tee -a smt_installer.log
+	echo 'Installing giza++' | tee -a smt_installer.log
 	cp giza-pp/GIZA++-v2/GIZA++ giza-pp/GIZA++-v2/snt2cooc.out giza-pp/GIZA++-v2/snt2plain.out giza-pp/GIZA++-v2/plain2snt.out giza-pp/mkcls-v2/mkcls bin
 
 	
@@ -130,25 +130,25 @@ irstlm_install()
 {
 	spinner &
 	if [ -d "irstlm/bin" ]; then
-		echo -e '\033[0;32m irstlm binaries found, skipping installation \e[0m'
+		echo -e '\033[0;32m irstlm binaries found, skipping installation \e[0m' | tee -a smt_installer.log
 		kill "$!"
 		return 1
 	fi
 	sudo rm irstlm/ irstlm-5.80.08/
-	echo "Downloading irstlm"
+	echo "Downloading irstlm" | tee -a smt_installer.log
 	sudo apt-get install irstlm
 	wget -O irstlm.zip https://sourceforge.net/projects/irstlm/files/irstlm/irstlm-5.80/irstlm-5.80.08.zip/download  
-	echo 'unpacking irstlm..'
+	echo 'unpacking irstlm..' | tee -a smt_installer.log
 	unzip irstlm.zip   || error
 	cd irstlm-5.80.08/trunk || error
-	echo 'Setting up irstlm...'
+	echo 'Setting up irstlm...' | tee -a smt_installer.log
 	./regenerate-makefiles.sh   || error
 	./regenerate-makefiles.sh   || error
 
 	./configure --prefix=$wdirect/irstlm   || error
-	echo 'compiling....' 
+	echo 'compiling....'  | tee -a smt_installer.log
 	make  
-	echo 'Installing irstlm....'
+	echo 'Installing irstlm....' | tee -a smt_installer.log
 	make install   || error
 	kill "$!"
 	cd ../../
@@ -158,19 +158,19 @@ srilm_install()
 {
 	spinner &
 	if [ -d "srilm/bin" ]; then
-		echo -e '\033[0;32m srilm binaries found, skipping installation \e[0m'
+		echo -e '\033[0;32m srilm binaries found, skipping installation \e[0m' | tee -a smt_installer.log
 		kill "$!"
 		return 1
 	fi
 	sudo rm srilm/
-	echo "Downloading srilm"
+	echo "Downloading srilm" | tee -a smt_installer.log
 	wget --no-check-certificate 'https://www.dropbox.com/s/mnfgpaw0oyh81gy/srilm%20%281%29.zip?dl=1' -O srilm.zip  
-	echo 'unpacking srilm..'
+	echo 'unpacking srilm..' | tee -a smt_installer.log
 	unzip srilm.zip  
 	cd srilm
-	echo 'Setting up srilm...'
+	echo 'Setting up srilm...' | tee -a smt_installer.log
 	make || error
-	echo 'Installing srilm....'
+	echo 'Installing srilm....' | tee -a smt_installer.log
 	make World || error
 	kill "$!"
 	cd ..
@@ -179,9 +179,9 @@ srilm_install()
 
 xmlrpc_install()
 {
-	echo "Downloading xmlrpc for moses2/moses_server "
+	echo "Downloading xmlrpc for moses2/moses_server " | tee -a smt_installer.log
 	sudo apt-get install -y libxmlrpc-c++8-dev libxmlrpc-c++8v5 libxmlrpc-core-c3 libxmlrpc-core-c3-dev xmlrpc-api-utils
-	echo "xmlrpc installed "
+	echo "xmlrpc installed " | tee -a smt_installer.log
 	
 
 }
@@ -189,9 +189,9 @@ xmlrpc_install()
 moses_install()
 {
 	spinner &
-	echo "Downloading mosesdecoder toolkit"
+	echo "Downloading mosesdecoder toolkit" | tee -a smt_installer.log
 	git clone https://github.com/moses-smt/mosesdecoder.git  
-	echo 'Compiling and Installing Mosesdecoder with giza++ ; boost ; irstlm, etc.'
+	echo 'Compiling and Installing Mosesdecoder with giza++ ; boost ; irstlm, etc.' | tee -a smt_installer.log
 	cd mosesdecoder/
 	./bjam --with-irstlm=$wdirect/irstlm --with-giza-pp=$wdirect/bin -j4   
 
@@ -202,7 +202,7 @@ moses_install()
 	sudo cp scripts/recaser/truecase.perl /usr/local/bin/truecase.perl
 	sudo cp scripts/training/clean-corpus-n.perl /usr/local/bin/clean-corpus-n.perl
 	sudo cp scripts/training/mert-moses.pl /usr/local/bin/mert-moses.pl 
-	echo "moses installed successfully"
+	echo "moses installed successfully" | tee -a smt_installer.log
 	kill "$!"
 	cd ..
 
@@ -212,10 +212,11 @@ moses2_install()
 {
 	spinner &
 	if [ ! -d "mosesdecoder/" ]; then
-		echo "Downloading mosesdecoder toolkit"
+		echo "Downloading mosesdecoder toolkit" | tee -a smt_installer.log
 		git clone https://github.com/moses-smt/mosesdecoder.git  
 	fi
 	xmlrpc_install || error
+	# old_xmlrpc_install
 	cd mosesdecoder
 	
 	./bjam --with-irstlm=$wdirect/irstlm --with-giza-pp=$wdirect/bin -j4
@@ -228,7 +229,7 @@ moses2_install()
 	sudo cp scripts/training/clean-corpus-n.perl /usr/local/bin/clean-corpus-n.perl
 	sudo cp scripts/training/mert-moses.pl /usr/local/bin/mert-moses.pl 
 	
-	echo "moses2 installed successfully"
+	echo "moses2 installed successfully" | tee -a smt_installer.log
 	cd ..
 
 	kill "$!"
@@ -239,18 +240,21 @@ test_moses()
 {
 	spinner &
 	if [ ! -d "sample-models/" ]; then
-		echo "Downloding test cases"
+		echo "Downloding test cases" | tee -a smt_installer.log
 		wget http://www.statmt.org/moses/download/sample-models.tgz    || chk_internet_connection 2> /dev/null
 		tar xzf sample-models.tgz   || error
 	fi
-	echo 'Validating install'
+	echo 'Validating install' | tee -a smt_installer.log
 	cd sample-models
 	../mosesdecoder/bin/moses -f phrase-model/moses.ini < phrase-model/in > out   || error
-	echo "moses installation successful"
-	notify-send "moses installation successful"
+	echo "moses installation successful" | tee -a smt_installer.log
+	notify-send "moses installation successful" 
 	
 	#feature yet to release
 	cd ..
+	clear
+	cat smt_installer.log
+
 
 	kill "$!"
 
@@ -260,7 +264,7 @@ test_moses()
 
 default_install() 
 {
-  echo "Installing mosesdecoder toolkit alongwith giza++, irstlm and boost c++ libraries "
+  echo "Installing mosesdecoder toolkit alongwith giza++, irstlm and boost c++ libraries " | tee -a smt_installer.log
   #spinner &
   linux_packages_install
   giza_pp_install
@@ -288,7 +292,7 @@ trap "echo 'exiting installer';exit" 0 1 2 5 15
 
 chk_internet_connection 2> /dev/null
 
-echo "loading installer"
+echo "loading installer" | tee -a smt_installer.log
 sudo apt-get install -y dialog   || chk_internet_connection 2> /dev/null
 
 echo ''
@@ -306,8 +310,8 @@ cd ${wdirect}
 echo ""
 #echo "enter password"
 
-sudo echo "working directory"
-pwd
+sudo echo "working directory" | tee -a smt_installer.log
+pwd 
 
 echo ''
 sleep 1
@@ -397,6 +401,7 @@ advanced_options()
 							linux_packages_install
 						  fi
                           lipdf=1
+                          #old_boost_cpp_libraries_install
 						 giza_pp_install
 						 srilm_install
 					     moses2_install
@@ -408,6 +413,7 @@ advanced_options()
 							linux_packages_install
 						  fi
                           lipdf=1
+                          # old_boost_cpp_libraries_install
 			  			  giza_pp_install
 			              moses_install
 			              test_moses
