@@ -292,6 +292,7 @@ recompile_moses()
 
 
 trap "echo 'exiting installer';exit" 0 1 2 5 15
+cat logo.txt
 
 chk_internet_connection 2> /dev/null
 
