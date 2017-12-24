@@ -14,9 +14,10 @@ Irstlm ver 5.8 fails to compile and install in Ubunto 17.10 and above. So it is 
 
 Run as : bash smt_installer.sh
 
+
 ########################################
 
-To add installation functionality for more programs, go through the following steps:
+To add more installation functionality for more programs, go through the following steps:
 
 	1. Add a bash function just before moses_install() function
 
