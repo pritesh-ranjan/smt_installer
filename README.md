@@ -10,7 +10,8 @@ Mosesdecoder is a statistical machine translation toolkit that allows one to
 automatically train translation models for any language pair. All we need is a
 collection of translated texts.
 
-Irstlm ver 5.8 fails to compile and install in Ubunto 17.10 and above. So it is reccomeded to use standalone irstlm from apt package manager. Also on Ubuntu systems 12.04 and lower use manual methods for boost cpp libraries installation.
+Irstlm ver 5.8 fails to compile and install in Ubuntu 17.10 and above. So it is reccomended to use standalone irstlm from apt package manager. 
+Also on Ubuntu systems 12.04 and lower use manual methods for boost cpp libraries installation.
 
 Run as : bash smt_installer.sh
 
