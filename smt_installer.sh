@@ -319,7 +319,7 @@ cat logo.txt
 chk_internet_connection 2> /dev/null
 echo "loading installer" 
 # install dialog
-sudo apt-get install -y dialog   || chk_internet_connection 2> /dev/null
+sudo apt-get install -y dialog zenity   || chk_internet_connection 2> /dev/null
 echo ''
 echo -e '\033[0;32m Please choose installation directory \e[0m'
 sleep 3
