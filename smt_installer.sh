@@ -425,7 +425,11 @@ advanced_options()
                           #old_boost_cpp_libraries_install
 						 giza_pp_install
 						 srilm_install
-					     moses2_install
+					     if [[ $irflag -eq 1 ]]; then
+							moses2_install ${irin}
+							else
+								moses2_install
+						  fi
 					     test_moses
                         ;;
                       6 )
