@@ -320,6 +320,7 @@ cat logo.txt
 chk_internet_connection 2> /dev/null
 
 echo "loading installer" | tee -a  $wdirect/smt_installer.log
+# install dialog
 sudo apt-get install -y dialog   || chk_internet_connection 2> /dev/null
 
 echo ''
@@ -427,6 +428,7 @@ advanced_options()
                         ;;
                       5 )
                         echo 5
+                        # install linux packages only if they are not installed before
                          if [[ $lipdf -eq 0 ]]; then
 							linux_packages_install
 						  fi

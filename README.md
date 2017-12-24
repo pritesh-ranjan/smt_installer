@@ -17,6 +17,7 @@ Run as : bash smt_installer.sh
 
 ########################################
 
+
 To add more installation functionality for more programs, go through the following steps:
 
 	1. Add a bash function just before moses_install() function
@@ -32,6 +33,8 @@ To add more installation functionality for more programs, go through the followi
 
 	6. It is reccomended to install program binaries and executable scripts to /usr/local/bin for easy access using:
 						sudo cp bin/xyz /usr/local/bin/xyz 
+						or
+						sudo install abc/xyz /usr/local/bin/xyz
 
 	7. Now finally add the option to install the tool in the dialog main menu or advanced configuration menu.
 
