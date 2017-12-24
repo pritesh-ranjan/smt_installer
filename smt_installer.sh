@@ -11,7 +11,7 @@
 error()
 {
 	echo -e "\033[0;31m Oops! ERROR" | tee -a  $wdirect/smt_installer.log
-	echo -e '\033[0;31m Please check if you have a working internet connection and you are authorised to install programs in this system \e[0m' | tee -a  $wdirect/smt_installer.log
+	echo -e '\033[0;31m Please check if you have a working internet connection and you are  authorised  to install programs in this system \e[0m' | tee -a  $wdirect/smt_installer.log
 	kill "$!"
 	exit
 }
