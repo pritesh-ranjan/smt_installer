@@ -23,21 +23,24 @@ To add more installation functionality for more programs, go through the followi
 
 	1. Add a bash function just before moses_install() function
 
-	2. Write the spinner command as the first coomand in your function ending with and "&"
+	2. Write the spinner command as the first coomand in your function ending with and "&" in order to move this process to the background and proceed with installation
 
 	3. Add the installation commands for the installation candidate. To get absolute path for the installation directory use variable "$wdirect"
 
-	4. Please add echo statements where ever necessary to show status of installation, in the following format:
+	4. It is highly recommended to call the error function whenever there is a chance of a fatal error using "|| error" at the end of any command, for example:
+						make install || error
+
+	5. Please add echo statements where ever necessary to show status of installation, in the following format:
 						echo 'Compiling xyz' | tee -a  $wdirect/smt_installer.log
 
-	5. At the end of the installation script kill the spinner via kill "$!"
+	6. At the end of the installation script kill the spinner via kill "$!"
 
-	6. It is reccomended to install program binaries and executable scripts to /usr/local/bin for easy access using:
+	7. It is reccomended to install program binaries and executable scripts to /usr/local/bin for easy access using:
 						sudo cp bin/xyz /usr/local/bin/xyz 
 						or
 						sudo install abc/xyz /usr/local/bin/xyz
 
-	7. Now finally add the option to install the tool in the dialog main menu or advanced configuration menu.
+	8. Now finally add the option to install the tool in the dialog main menu or advanced configuration menu.
 
 
 
