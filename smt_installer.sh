@@ -1,7 +1,13 @@
 #!/bin/bash
 
-lipdf=0
+############################################################################################
+#                    STATISTICAL MACHINE TRANSLATION TOOLS INSTALLER                       #
+#																						   #
+#							-PRITESH RANJAN												   #
+#																						   #
+############################################################################################
 
+# error function called when ever something important fails to execute.
 error()
 {
 	echo -e "\033[0;31m Oops! ERROR" | tee -a  $wdirect/smt_installer.log
@@ -10,11 +16,13 @@ error()
 	exit
 }
 
+# to check for a stable internet connection
 chk_internet_connection() 
 {
 	ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` 2> /dev/null && echo "Internet is working" || error
 }
 
+# spinner animation while something runs in the background
 spinner()
 {
 	local i sp n
@@ -27,7 +35,7 @@ spinner()
     done
 }
 
-
+# Update apt-get and install necessary packages
 linux_packages_install()
 {
 	echo 'Updating apt-get' | tee -a  $wdirect/smt_installer.log
@@ -44,7 +52,7 @@ linux_packages_install()
 }
 
 
-
+# download indic nlp library for indic languages from github and install the tokeniser to /usr/local/bin for easy access
 indic_nlp_library_install()
 {
 	if [ -d "indic_nlp_library/src" ]; then
@@ -53,14 +61,17 @@ indic_nlp_library_install()
 	fi
 	echo "Downloading indic_nlp_library" | tee -a  $wdirect/smt_installer.log
 	spinner &
-	git clone https://github.com/anoopkunchukuttan/indic_nlp_library.git  
+	git clone https://github.com/anoopkunchukuttan/indic_nlp_library.git
+	chmod +x indic_nlp_library/src/indicnlp/tokenize/indic_tokenize.py   
 	sudo cp indic_nlp_library/src/indicnlp/tokenize/indic_tokenize.py /usr/local/bin/indic_tokenize.py 
 	echo "Indic nlp library successfully installed" | tee -a  $wdirect/smt_installer.log
 	kill "$!"
 }
 
 
-#use if current way does not work
+# manually install boost c++ libraries using the following method; use only if current way does not work.
+# boost c++ libraries seems to be corrupted on ubuntu distributions 12.04 and older so there use this method
+# The current (via apt-get) installs an older but compatible version of libboost-all-dev. But if latest version is required use this  
 old_boost_cpp_libraries_install()
 {		
 	spinner &
@@ -82,6 +93,9 @@ old_boost_cpp_libraries_install()
 
 }
 
+# moses2 and moses-server require xmlrpc c++ libraries to install and work properly. Currently they are being installed via apt-get in line 197
+# manually install xmlrpc libraries using the following method;use only if current way does not work.
+
 old_xmlrpc_install()
 {
 	echo "Downloading xmlrpc for moses2/moses_server " | tee -a  $wdirect/smt_installer.log
@@ -96,7 +110,7 @@ old_xmlrpc_install()
 
 }
 
-
+# installation for giza-pp
 giza_pp_install()
 {
 	spinner &
@@ -109,7 +123,7 @@ giza_pp_install()
 	echo "Downloading giza-pp" | tee -a  $wdirect/smt_installer.log
 	git clone https://github.com/moses-smt/giza-pp.git  
 	cd giza-pp
-	echo 'Compiling giza++'
+	echo 'Compiling giza++' | tee -a  $wdirect/smt_installer.log
 	make   || error
 	cd ../
 	mkdir bin | tee -a  $wdirect/smt_installer.log
@@ -127,6 +141,7 @@ giza_pp_install()
 
 }
 
+# manual installation for irstlm ver 5.8
 irstlm_install()
 {
 	spinner &
@@ -156,6 +171,8 @@ irstlm_install()
 	cd ../../
 
 }
+
+# installation for srilm
 srilm_install()
 {
 	spinner &
@@ -180,6 +197,7 @@ srilm_install()
 
 }
 
+# installation for xmlrpc using apt-get
 xmlrpc_install()
 {
 	echo "Downloading xmlrpc for moses2/moses_server " | tee -a  $wdirect/smt_installer.log
@@ -189,6 +207,7 @@ xmlrpc_install()
 
 }
 
+# installation for moses
 moses_install()
 {
 	spinner &
@@ -211,6 +230,7 @@ moses_install()
 
 }
 
+# installation for moses; moses2/moses-server
 moses2_install()
 {
 	spinner &
@@ -219,6 +239,7 @@ moses2_install()
 		git clone https://github.com/moses-smt/mosesdecoder.git  
 	fi
 	xmlrpc_install || error
+	# uncomment to install xmlrpc manually
 	# old_xmlrpc_install
 	cd mosesdecoder
 	
@@ -239,6 +260,8 @@ moses2_install()
 
 }
 
+
+# test moses installation
 test_moses()
 {
 	spinner &
@@ -264,7 +287,7 @@ test_moses()
 }
 
 
-
+# default installation
 default_install() 
 {
   echo "Installing mosesdecoder toolkit alongwith giza++, irstlm and boost c++ libraries " | tee -a  $wdirect/smt_installer.log
@@ -408,6 +431,7 @@ advanced_options()
 							linux_packages_install
 						  fi
                           lipdf=1
+                          # uncomment to install boost manually
                           #old_boost_cpp_libraries_install
 						 giza_pp_install
 						 srilm_install
