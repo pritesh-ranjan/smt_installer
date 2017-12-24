@@ -316,7 +316,7 @@ recompile_moses()
 
 trap "echo 'exiting installer';exit" 0 1 2 5 15
 cat logo.txt
-#chk_internet_connection 2> /dev/null
+chk_internet_connection 2> /dev/null
 echo "loading installer" 
 # install dialog
 sudo apt-get install -y dialog   || chk_internet_connection 2> /dev/null
@@ -408,6 +408,7 @@ advanced_options()
 						  fi
                           lipdf=1
                          irstlm_install
+                         irflag=1
                         ;;
                       4 )
                         echo 4
@@ -435,7 +436,11 @@ advanced_options()
                           lipdf=1
                           # old_boost_cpp_libraries_install
 			  			  giza_pp_install
-			              moses_install ${irin}
+			  			  if [[ $irflag -eq 1 ]]; then
+							moses_install ${irin}
+							else
+								moses_install
+						  fi
 			              test_moses
                           
         
