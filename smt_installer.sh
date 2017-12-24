@@ -316,35 +316,25 @@ recompile_moses()
 
 trap "echo 'exiting installer';exit" 0 1 2 5 15
 cat logo.txt
-
-chk_internet_connection 2> /dev/null
-
-echo "loading installer" | tee -a  $wdirect/smt_installer.log
+#chk_internet_connection 2> /dev/null
+echo "loading installer" 
 # install dialog
 sudo apt-get install -y dialog   || chk_internet_connection 2> /dev/null
-
 echo ''
-
-
-
-
 echo -e '\033[0;32m Please choose installation directory \e[0m'
 sleep 3
 wdirect=$(zenity --file-selection --directory)
 sleep 1
-
 mkdir -p ${wdirect} || error
 cd ${wdirect}
 echo ""
-#echo "enter password"
-
-sudo echo "working directory" 
+echo "enter password"
+sudo echo "installation directory" 
 pwd 
-
 rm ${wdirect}/smt_installer.log
-
 echo ''
 sleep 1
+
 
 
 
@@ -352,9 +342,6 @@ DIALOG_CANCEL=1
 DIALOG_ESC=255
 HEIGHT=0
 WIDTH=0
-
-
-
 
 advanced_options()
 {
