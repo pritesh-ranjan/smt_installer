@@ -358,7 +358,7 @@ advanced_options()
     1 indic_nlp_library off \
     2 srilm off  \
     3 "irstlm (for moses on ubuntu 16.04 and below )" on \
-    4 "standalone irstlm, not integretable with moses (for ubuntu 17.10 and above) " off \
+    4 "standalone irstlm, not installed with moses (ubuntu ver >= 17.10 ) " off \
     5 "moses, moses2/moses-server, srilm with boost and giza++ " off \
     6 "mosesdecoder with boost, giza++ and kenlm" on \
     2>&1 1>&3)
