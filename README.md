@@ -15,9 +15,9 @@ Also on Ubuntu systems 12.04 and lower use manual methods for boost cpp librarie
 
 Run as : bash smt_installer.sh
 
-<img src="./images/1.png" width="350">
-<img src="./images/2.png" width="350">
-<img src="./images/3.png" width="350">
+<img src="./screenshots/1.png" width="350">
+<img src="./screenshots/2.png" width="350">
+<img src="./screenshots/3.png" width="350">
 
 
 
