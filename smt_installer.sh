@@ -333,11 +333,18 @@ recompile_moses()
 
 }
 
-
+# call if zenity not available
+get_path()
+{
+	echo "Please enter absolute path to installation directory in this format (without quotes)"
+	echo "'/home/xyz/path/here'"
+	read var1
+	echo $var1
+}
 
 trap "echo 'exiting installer';exit" 0 1 2 5 15
 cat logo.txt
-chk_internet_connection 2> /dev/null
+#chk_internet_connection 2> /dev/null
 echo "loading installer" 
 # install dialog
 sudo apt-get install -y dialog zenity   || chk_internet_connection 2> /dev/null
