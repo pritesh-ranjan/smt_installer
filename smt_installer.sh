@@ -7,21 +7,29 @@
 #																						   #
 ############################################################################################
 
+
+#make sure this script wasn't started as 'sh smt_installer.sh' or similar.
+if [ "x$BASH" = "x" ]; then
+    echo "\033[0;31m Should be started as 'bash smt_installer.sh'"
+    exit 1;
+fi
+
 # error function called when ever something important fails to execute.
 error()
 {
-	echo -e "\033[0;31m Oops! ERROR" | tee -a  $wdirect/smt_installer.log
-	echo " " ${1}
+	echo -e "\033[0;31m Oops! ERROR: " ${1} | tee -a  $wdirect/smt_installer.log
+	echo ""
+	echo ""
 	echo -e '\033[0;31m Please check if you have a working internet connection and you are  authorised  to install programs in this system \e[0m' | tee -a  $wdirect/smt_installer.log
-	cat smt_installer
+
 	kill "$!"
-	exit
+	exit 1
 }
 
 # to check for a stable internet connection
 chk_internet_connection() 
 {
-	ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` 2> /dev/null && echo "Internet is working" || error
+	ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` 2> /dev/null && echo "Internet is working" || error "No internet"
 }
 
 # spinner animation while something runs in the background
@@ -42,9 +50,9 @@ linux_packages_install()
 {
 	echo 'Updating apt-get' | tee -a  $wdirect/smt_installer.log
 	spinner &
-	sudo apt-get -y update   || error
+	sudo apt-get -y update   || error "apt update error: cannot update "
 	echo 'Downloading and installing all required packages' | tee -a  $wdirect/smt_installer.log
-	sudo apt-get install -y g++ git automake libtool zlib1g-dev libboost-all-dev libbz2-dev liblzma-dev libgoogle-perftools-dev python-dev graphviz imagemagick cmake build-essential subversion autoconf unzip   || error
+	sudo apt-get install -y g++ git automake libtool zlib1g-dev libboost-all-dev libbz2-dev liblzma-dev libgoogle-perftools-dev python-dev graphviz imagemagick cmake build-essential subversion autoconf unzip   || error "cannot download essential packages"
 	sudo apt-get install -y make  
 	sudo apt-get install -y unzip  
 	kill "$!"
@@ -63,8 +71,8 @@ indic_nlp_library_install()
 	fi
 	echo "Downloading indic_nlp_library" | tee -a  $wdirect/smt_installer.log
 	spinner &
-	git clone https://github.com/anoopkunchukuttan/indic_nlp_library.git
-	chmod +x indic_nlp_library/src/indicnlp/tokenize/indic_tokenize.py   
+	git clone https://github.com/anoopkunchukuttan/indic_nlp_library.git || error "cannot download"
+	chmod +x indic_nlp_library/src/indicnlp/tokenize/indic_tokenize.py 
 	sudo cp indic_nlp_library/src/indicnlp/tokenize/indic_tokenize.py /usr/local/bin/indic_tokenize.py 
 	echo "Indic nlp library successfully installed" | tee -a  $wdirect/smt_installer.log
 	kill "$!"
@@ -115,6 +123,7 @@ old_xmlrpc_install()
 # installation for giza-pp
 giza_pp_install()
 {
+	cd $wdirect
 	spinner &
 	if [ -d "bin/" ]; then
 		echo -e '\033[0;32m giza-pp binaries found, skipping installation \e[0m' | tee -a  $wdirect/smt_installer.log
@@ -126,7 +135,7 @@ giza_pp_install()
 	git clone https://github.com/moses-smt/giza-pp.git  
 	cd giza-pp
 	echo 'Compiling giza++' | tee -a  $wdirect/smt_installer.log
-	make   || error
+	make   || error "problems in installing giza-pp"
 	cd ../
 	mkdir bin | tee -a  $wdirect/smt_installer.log
 	echo 'Installing giza++' | tee -a  $wdirect/smt_installer.log
@@ -137,7 +146,7 @@ giza_pp_install()
 	sudo cp giza-pp/GIZA++-v2/snt2cooc.out /usr/local/bin/snt2cooc.out
 	sudo cp giza-pp/GIZA++-v2/snt2plain.out /usr/local/bin/snt2plain.out
 	sudo cp giza-pp/GIZA++-v2/plain2snt.out /usr/local/bin/plain2snt.out
-	sudo cp giza-pp/mkcls-v2/mkcls /usr/local/bin/mkcls || error
+	sudo cp giza-pp/mkcls-v2/mkcls /usr/local/bin/mkcls
 	echo "giza-pp installed successfully" | tee -a  $wdirect/smt_installer.log
 	kill "$!"
 
@@ -157,17 +166,17 @@ irstlm_install()
 	sudo apt-get install irstlm
 	wget -O irstlm.zip https://sourceforge.net/projects/irstlm/files/irstlm/irstlm-5.80/irstlm-5.80.08.zip/download  
 	echo 'unpacking irstlm..' | tee -a  $wdirect/smt_installer.log
-	unzip irstlm.zip   || error
-	cd irstlm-5.80.08/trunk || error
+	unzip irstlm.zip   || error "unable to unzip irstlm.zip"
+	cd irstlm-5.80.08/trunk || error "irstlm doesnot exist"
 	echo 'Setting up irstlm...' | tee -a  $wdirect/smt_installer.log
-	./regenerate-makefiles.sh   || error
-	./regenerate-makefiles.sh   || error
+	./regenerate-makefiles.sh
+	./regenerate-makefiles.sh   || error "fatal error while running ./regenerate-makefiles.sh  in irstlm"
 
-	./configure --prefix=$wdirect/irstlm   || error
+	./configure --prefix=$wdirect/irstlm   || error "fatal error in ./configure in irstlm"
 	echo 'compiling....'  | tee -a  $wdirect/smt_installer.log
 	make  
 	echo 'Installing irstlm....' | tee -a  $wdirect/smt_installer.log
-	make install   || error
+	make install   || error "make install error in irstlm"
 	echo 'irstlm installed successfully' | tee -a  $wdirect/smt_installer.log
 	kill "$!"
 	cd ../../
@@ -187,12 +196,12 @@ srilm_install()
 	echo "Downloading srilm" | tee -a  $wdirect/smt_installer.log
 	wget --no-check-certificate 'https://www.dropbox.com/s/mnfgpaw0oyh81gy/srilm%20%281%29.zip?dl=1' -O srilm.zip  
 	echo 'unpacking srilm..' | tee -a  $wdirect/smt_installer.log
-	unzip srilm.zip  
+	unzip srilm.zip || error "cannot unzip srilm.zip"
 	cd srilm
 	echo 'Setting up srilm...' | tee -a  $wdirect/smt_installer.log
-	make || error
+	make || error "make error"
 	echo 'Installing srilm....' | tee -a  $wdirect/smt_installer.log
-	make World || error
+	make World || error "make error"
 	echo 'srilm installed successfully' | tee -a  $wdirect/smt_installer.log
 	kill "$!"
 	cd ..
@@ -212,12 +221,14 @@ xmlrpc_install()
 # installation for moses
 moses_install()
 {
+	cd $wdirect
 	spinner &
 	echo "Downloading mosesdecoder toolkit" | tee -a  $wdirect/smt_installer.log
 	git clone https://github.com/moses-smt/mosesdecoder.git  
 	echo 'Compiling and Installing Mosesdecoder with giza++ ; boost ; irstlm, etc.' | tee -a  $wdirect/smt_installer.log
 	cd mosesdecoder/
-	./bjam --with-giza-pp=$wdirect/bin ${1} -j4   
+	install_moses="./bjam --with-giza-pp=$wdirect/bin ${1} -j4"
+	${install_moses} || {install_moses}
 
 	sudo cp bin/build_binary /usr/local/bin/build_binary
 	sudo cp bin/moses /usr/local/bin/moses
@@ -235,6 +246,7 @@ moses_install()
 # installation for moses; moses2/moses-server
 moses2_install()
 {
+	cd $wdirect
 	spinner &
 	if [ ! -d "mosesdecoder/" ]; then
 		echo "Downloading mosesdecoder toolkit" | tee -a  $wdirect/smt_installer.log
@@ -245,8 +257,8 @@ moses2_install()
 	# old_xmlrpc_install
 	cd mosesdecoder
 	
-	./bjam --with-giza-pp=$wdirect/bin ${1} -j4
-
+	install_moses="./bjam --with-giza-pp=$wdirect/bin ${1} -j4"
+	${install_moses} || {install_moses}
 	sudo cp bin/build_binary /usr/local/bin/build_binary
 	sudo cp bin/moses /usr/local/bin/moses
 	sudo cp scripts/recaser/train-truecaser.perl /usr/local/bin/train-truecaser.perl
@@ -279,8 +291,8 @@ test_moses()
 	notify-send "moses installation successful" 
 	
 	#feature yet to release
-	cd ..
-	clear
+	#cd ..
+	#clear
 	
 
 
@@ -294,12 +306,19 @@ default_install()
 {
   echo "Installing mosesdecoder toolkit alongwith giza++, irstlm and boost c++ libraries " | tee -a  $wdirect/smt_installer.log
   #spinner &
+  irin="--with-irstlm=$wdirect/irstlm"
   linux_packages_install
   giza_pp_install
   irstlm_install
-  moses_install
+  moses_install $irin
   test_moses
   #kill "$!"
+  clear
+  cd $wdirect
+  cat smt_installer.log
+	   #kill "$!"
+  exit
+
 
    
 }
@@ -327,12 +346,13 @@ echo -e '\033[0;32m Please choose installation directory \e[0m'
 sleep 3
 wdirect=$(zenity --file-selection --directory)
 sleep 1
-mkdir -p ${wdirect} || error
+mkdir -p ${wdirect} || error "cannot create installation directory"
 cd ${wdirect}
 echo ""
 echo "enter password"
 sudo echo "installation directory" 
-pwd 
+pwd
+sleep 2
 rm ${wdirect}/smt_installer.log
 echo ''
 sleep 1
@@ -411,6 +431,7 @@ advanced_options()
                           lipdf=1
                          irstlm_install
                          irflag=1
+                         #test_moses
                         ;;
                       4 )
                         echo 4
@@ -457,12 +478,12 @@ advanced_options()
    else         echo cancel selected
 
    fi
-   #kill "$!"
-   clear
-   cat  $wdirect/smt_installer.log
-
   
-   exit
+clear
+cd $wdirect
+cat smt_installer.log
+   #kill "$!"
+exit 
   
 done
 
@@ -511,5 +532,17 @@ while true; do
         
       ;;
   esac
+  clear
+cd $wdirect
+cat smt_installer.log
+   #kill "$!"
+exit
+
 done
+
 clear
+cd $wdirect
+cat smt_installer.log
+   #kill "$!"
+exit
+
