@@ -3,7 +3,7 @@
 ############################################################################################
 #                    STATISTICAL MACHINE TRANSLATION TOOLS INSTALLER                       #
 #																						   #
-#							-pranjan341@gmail.com												   #
+#							-pranjan341@gmail.com										   #
 #																						   #
 ############################################################################################
 
@@ -11,7 +11,9 @@
 error()
 {
 	echo -e "\033[0;31m Oops! ERROR" | tee -a  $wdirect/smt_installer.log
+	echo " " ${1}
 	echo -e '\033[0;31m Please check if you have a working internet connection and you are  authorised  to install programs in this system \e[0m' | tee -a  $wdirect/smt_installer.log
+	cat smt_installer
 	kill "$!"
 	exit
 }
