@@ -6,19 +6,26 @@ The installer is highly configurable and comes with the following options:
     1. Default: Only Moses, giza-pp, boost and irstlm installation
     2. Advanced: Choose between the different options what to install (like moses, moses2/moses-server, srilm, kenlm, irstlm, indic nlp library)
 
+### Usage
+
+```bash
+git clone https://github.com/prites18/smt_installer
+cd smt_installer
+bash smt_installer.sh
+```
+
+### Demo
+
+<img src="./screenshots/1.png" width="350">   <img src="./screenshots/2.png" width="350">
+<img src="./screenshots/3.png" width="350">
+
 Mosesdecoder is a statistical machine translation toolkit that allows one to
 automatically train translation models for any language pair. All we need is a
 collection of translated texts.
 
-Irstlm ver 5.8 fails to compile and install in Ubuntu 17.10 and above. So it is reccomended to use standalone irstlm from apt package manager. 
+NOTE:
+Irstlm ver 5.8 fails to compile and install in Ubuntu 17.10 and above. So it is reccomended to use standalone irstlm from apt package manager (also available as an option in the installer). 
 Also on Ubuntu systems 12.04 and lower use manual methods for boost cpp libraries installation.
-
-Run as : bash smt_installer.sh
-
-<img src="./screenshots/1.png" width="350">
-<img src="./screenshots/2.png" width="350">
-<img src="./screenshots/3.png" width="350">
-
 
 
 ########################################
