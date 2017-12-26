@@ -40,7 +40,7 @@ To add more installation functionality for more programs, go through the followi
 	3. Add the installation commands for the installation candidate. To get absolute path for the installation directory use variable "$wdirect"
 
 	4. It is highly recommended to call the error function whenever there is a chance of a fatal error using "|| error" at the end of any command, for example:
-						make install || error
+						make install || error "optional error message"
 
 	5. Please add echo statements where ever necessary to show status of installation, in the following format:
 						echo 'Compiling xyz' | tee -a  $wdirect/smt_installer.log
