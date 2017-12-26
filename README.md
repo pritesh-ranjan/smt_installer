@@ -1,6 +1,6 @@
 # smt_installer
 
-A shell script installer for statistical machine translation tools like mosesdecoder, moses2, giza++, irstlm, srilm, indic nlp library. This script uses "dialog" for its terminal based graphical user interface and zenity for its file chooser dialog-box. All linux packages are installed using apt-get only.
+A shell script installer for statistical machine translation tools like mosesdecoder, moses2, moses-server, giza++, irstlm, srilm, indic nlp library on ubuntu and ubuntu based distros. This script uses "dialog" for its terminal based graphical user interface and zenity for its file chooser dialog-box. All linux packages are installed using apt-get only.
  
 The installer is highly configurable and comes with the following options: 
     1. Default: Only Moses, giza-pp, boost and irstlm installation
@@ -24,6 +24,7 @@ automatically train translation models for any language pair. All we need is a
 collection of translated texts.
 
 ### NOTE:
+
 Irstlm ver 5.8 fails to compile and install in Ubuntu 17.10 and above. So it is reccomended to use standalone irstlm from apt package manager (also available as an option in the installer). 
 Also on Ubuntu systems 12.04 and lower use manual methods for boost cpp libraries installation.
 
