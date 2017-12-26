@@ -4,7 +4,7 @@ A shell script installer for statistical machine translation tools like mosesdec
  
 The installer is highly configurable and comes with the following options: 
     1. Default: Only Moses, giza-pp, boost and irstlm installation
-    2. Advanced: Choose between the different options what to install (like moses, moses2/moses-server, srilm, kenlm, irstlm, indic nlp library)
+    2. Advanced: Choose between the different options what to install (like moses, moses2/moses-server, srilm, kenlm, irstlm (with moses), irstlm standalone, indic nlp library)
 
 ### Usage
 
@@ -23,7 +23,7 @@ Mosesdecoder is a statistical machine translation toolkit that allows one to
 automatically train translation models for any language pair. All we need is a
 collection of translated texts.
 
-NOTE:
+### NOTE:
 Irstlm ver 5.8 fails to compile and install in Ubuntu 17.10 and above. So it is reccomended to use standalone irstlm from apt package manager (also available as an option in the installer). 
 Also on Ubuntu systems 12.04 and lower use manual methods for boost cpp libraries installation.
 
