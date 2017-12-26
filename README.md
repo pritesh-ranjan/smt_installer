@@ -9,7 +9,7 @@ The installer is highly configurable and comes with the following options:
 ### Usage
 
 ```bash
-git clone https://github.com/prites18/smt_installer
+git clone https://github.com/prites18/smt_installer.git
 cd smt_installer
 bash smt_installer.sh
 ```
